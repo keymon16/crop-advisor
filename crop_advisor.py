@@ -1,45 +1,40 @@
+import streamlit as st
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-import matplotlib.pyplot as plt
-import seaborn as sns
-import warnings
-warnings.filterwarnings("ignore")
 
-# Step 1: Load the dataset
-data = pd.read_csv("Crop_recommendation.csv")
+st.set_page_config(page_title="🌾 Crop Advisor UI", layout="centered")
 
-# Step 2: Split data into input (X) and output (y)
-X = data[['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall']]
-y = data['label']
+st.title("🌱 Data-Driven Crop Advisory System")
 
-# Step 3: Train the model
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-model = RandomForestClassifier()
-model.fit(X_train, y_train)
+st.markdown("### 🎚️ Adjust Parameters Using Sliders")
 
-# Step 4: Take user input
-print("Enter the following values to get crop recommendation:")
-N = float(input("Nitrogen (N): "))
-P = float(input("Phosphorous (P): "))
-K = float(input("Potassium (K): "))
-temperature = float(input("Temperature (°C): "))
-humidity = float(input("Humidity (%): "))
-ph = float(input("Soil pH: "))
-rainfall = float(input("Rainfall (mm): "))
+# 🎚️ Unique way to take input: sliders (moving bars)
+n = st.slider("Nitrogen (N)", 0, 140, 70, step=5)
+p = st.slider("Phosphorus (P)", 0, 140, 60, step=5)
+k = st.slider("Potassium (K)", 0, 140, 50, step=5)
+ph = st.slider("pH Level", 0.0, 14.0, 6.5, step=0.1)
+temp = st.slider("Temperature (°C)", 0, 50, 28)
+humidity = st.slider("Humidity (%)", 0, 100, 65)
+rainfall = st.slider("Rainfall (mm)", 0, 300, 100)
 
-# Step 5: Predict the crop
-input_data = [[N, P, K, temperature, humidity, ph, rainfall]]
-prediction = model.predict(input_data)
-print("\n🌾 Recommended Crop to Grow:", prediction[0])
-parameters = ['Nitrogen (N)', 'Phosphorus (P)', 'Potassium (K)', 'Temperature (°C)', 'Humidity (%)', 'pH', 'Rainfall (mm)']
-values = [N, P, K, temperature, humidity, ph, rainfall]
+if st.button("🌾 Recommend Crop"):
+    # Basic rule-based logic (you can add ML model here)
+    if ph < 6.0:
+        crop = "Rice"
+    elif temp > 30:
+        crop = "Sugarcane"
+    elif humidity > 70:
+        crop = "Banana"
+    else:
+        crop = "Wheat"
 
-plt.figure(figsize=(10, 6))
-plt.bar(parameters, values, color='skyblue')
-plt.title('Your Input Parameters')
-plt.ylabel('Values')
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.show()
+    st.success(f"✅ Recommended Crop: **{crop}**")
+
+    # 🎨 Show input visually in a graph
+    df = pd.DataFrame({
+        'Parameter': ['Nitrogen', 'Phosphorus', 'Potassium', 'pH', 'Temp', 'Humidity', 'Rainfall'],
+        'Value': [n, p, k, ph, temp, humidity, rainfall]
+    })
+
+    st.markdown("### 📊 Your Input Overview")
+    st.bar_chart(df.set_index("Parameter"))
 
