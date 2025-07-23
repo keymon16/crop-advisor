@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+import seaborn as sns
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -30,3 +32,14 @@ rainfall = float(input("Rainfall (mm): "))
 input_data = [[N, P, K, temperature, humidity, ph, rainfall]]
 prediction = model.predict(input_data)
 print("\n🌾 Recommended Crop to Grow:", prediction[0])
+parameters = ['Nitrogen (N)', 'Phosphorus (P)', 'Potassium (K)', 'Temperature (°C)', 'Humidity (%)', 'pH', 'Rainfall (mm)']
+values = [N, P, K, temperature, humidity, ph, rainfall]
+
+plt.figure(figsize=(10, 6))
+plt.bar(parameters, values, color='skyblue')
+plt.title('Your Input Parameters')
+plt.ylabel('Values')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
